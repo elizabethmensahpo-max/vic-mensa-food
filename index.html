@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>VICMENSA FOOD STORE- ORDER</title>
+  <title>Vic Mensa Food Store - Order</title>
   <style>
     * { margin:0; padding:0; box-sizing:border-box; touch-action: manipulation; }
     body {
@@ -78,8 +78,6 @@
       margin-bottom: 14px;
       cursor: pointer;
     }
-    .add-btn:hover { background: #e03e00; }
-
     .actions {
       display: flex;
       justify-content: center;
@@ -108,8 +106,7 @@
       height: 60px;
       margin-bottom: 4px;
     }
-
-    #cart-screen {
+    #cart-screen, #payment-screen {
       display: none;
       flex-direction: column;
       flex: 1;
@@ -175,10 +172,11 @@
     .pay-options {
       display: flex;
       justify-content: center;
-      gap: 50px;
-      padding: 24px 0;
+      gap: 40px;
+      padding: 20px 0;
+      flex-wrap: wrap;
     }
-    .pay-btn {
+    .pay-method-btn {
       width: 140px;
       height: 140px;
       border-radius: 20px;
@@ -187,17 +185,51 @@
       align-items: center;
       justify-content: center;
       color: white;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: bold;
       cursor: pointer;
       box-shadow: 0 5px 12px rgba(0,0,0,0.25);
+      margin: 10px;
     }
-    .pay-btn.momo { background: #32cd32; }
-    .pay-btn.cash { background: #ffd700; color: #333; }
-    .pay-btn img {
-      width: 80px;
-      height: 80px;
-      margin-bottom: 6px;
+    .pay-method-btn.momo { background: #32cd32; }
+    .pay-method-btn.telecel { background: #00a651; }
+    .pay-method-btn.bank { background: #1e90ff; }
+    .pay-method-btn img {
+      width: 70px;
+      height: 70px;
+      margin-bottom: 8px;
+    }
+    #payment-form {
+      padding: 16px;
+      background: #f9f9f9;
+      border-radius: 12px;
+      margin: 16px 0;
+    }
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 12px;
+      font-size: 1.2rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+    .confirm-btn {
+      background: #006400;
+      color: white;
+      border: none;
+      font-size: 1.3rem;
+      font-weight: bold;
+      padding: 14px;
+      border-radius: 12px;
+      width: 100%;
+      cursor: pointer;
+      margin-top: 16px;
     }
     footer {
       background: #006400;
@@ -211,8 +243,6 @@
       color: #ffff00;
       text-decoration: none;
     }
-
-    /* Toast */
     .toast {
       position: fixed;
       top: 12%;
@@ -238,7 +268,7 @@
 </head>
 <body>
 
-  <header>VICMENSA FOOD STORE</header>
+  <header>Vic Mensa Food Store</header>
 
   <div class="container">
 
@@ -287,6 +317,7 @@
       </div>
     </div>
 
+    <!-- Cart Screen -->
     <div id="cart-screen">
       <div id="cart-items"></div>
       <div class="total" id="total">₵0</div>
@@ -298,14 +329,46 @@
         </div>
 
         <div class="pay-options" id="pay-options" style="display:none;">
-          <div class="pay-btn momo" onclick="pay()">
+          <div class="pay-method-btn momo" onclick="showPayment('momo')">
             <img src="https://img.icons8.com/fluency/96/000000/mobile-payment.png" alt="MoMo">
             MoMo
           </div>
-          <div class="pay-btn cash" onclick="pay()">
-            <img src="https://img.icons8.com/fluency/96/000000/cash-in-hand.png" alt="Cash">
-            Cash
+          <div class="pay-method-btn telecel" onclick="showPayment('telecel')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Telecel_Ghana_Logo.svg/512px-Telecel_Ghana_Logo.svg.png" alt="Telecel">
+            Telecel Cash
           </div>
+          <div class="pay-method-btn bank" onclick="showPayment('bank')">
+            <img src="https://img.icons8.com/fluency/96/000000/bank.png" alt="Bank">
+            Bank Transfer
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment Details Screen -->
+    <div id="payment-screen">
+      <h2 style="text-align:center; margin:16px 0; font-size:1.6rem;">Enter Payment Details</h2>
+
+      <div id="payment-form">
+        <div id="payment-type" style="font-size:1.3rem; font-weight:bold; margin-bottom:12px;"></div>
+
+        <label for="phone">Your Phone Number (for MoMo/Telecel)</label>
+        <input type="tel" id="phone" placeholder="e.g. 0594302070" required>
+
+        <div id="bank-fields" style="display:none;">
+          <label for="account">Bank Account Number</label>
+          <input type="text" id="account" placeholder="Enter account number">
+
+          <label for="account-name">Account Name</label>
+          <input type="text" id="account-name" placeholder="Your name on the account">
+        </div>
+
+        <button class="confirm-btn" onclick="confirmPayment()">Confirm Payment</button>
+      </div>
+
+      <div class="actions">
+        <div class="big-icon-btn" onclick="backToCart()" style="background:#555; width:140px; height:140px; font-size:1rem;">
+          Back to Cart
         </div>
       </div>
     </div>
@@ -326,6 +389,7 @@
     ];
 
     let cart = [0, 0, 0, 0];
+    let selectedPaymentMethod = '';
 
     function add(index) {
       cart[index]++;
@@ -347,6 +411,7 @@
 
     function showCart() {
       document.getElementById("menu-screen").style.display = "none";
+      document.getElementById("payment-screen").style.display = "none";
       document.getElementById("cart-screen").style.display = "flex";
 
       const itemsDiv = document.getElementById("cart-items");
@@ -380,20 +445,65 @@
       document.getElementById("pay-options").style.display = total > 0 ? "flex" : "none";
     }
 
-    function changeQty(index, delta) {
-      cart[index] = Math.max(0, cart[index] + delta);
-      showCart();
+    function showPayment(method) {
+      selectedPaymentMethod = method;
+      document.getElementById("cart-screen").style.display = "none";
+      document.getElementById("payment-screen").style.display = "flex";
+
+      const typeDiv = document.getElementById("payment-type");
+      const bankFields = document.getElementById("bank-fields");
+
+      if (method === 'momo') {
+        typeDiv.textContent = "Pay with MoMo";
+        bankFields.style.display = "none";
+      } else if (method === 'telecel') {
+        typeDiv.textContent = "Pay with Telecel Cash";
+        bankFields.style.display = "none";
+      } else if (method === 'bank') {
+        typeDiv.textContent = "Bank Transfer";
+        bankFields.style.display = "block";
+      }
+    }
+
+    function confirmPayment() {
+      const phone = document.getElementById("phone").value.trim();
+      const account = document.getElementById("account")?.value.trim() || "";
+      const accountName = document.getElementById("account-name")?.value.trim() || "";
+
+      if (!phone && selectedPaymentMethod !== 'bank') {
+        alert("Please enter your phone number for " + selectedPaymentMethod.toUpperCase());
+        return;
+      }
+
+      if (selectedPaymentMethod === 'bank' && (!account || !accountName)) {
+        alert("Please fill in bank account number and name");
+        return;
+      }
+
+      const msg = `Payment confirmed via ${selectedPaymentMethod.toUpperCase()}!\n` +
+                   (phone ? `Phone: ${phone}\n` : "") +
+                   (account ? `Account: ${account} (${accountName})\n` : "") +
+                   "Thank you! Your order is being prepared.\nCall/WhatsApp 059 430 2070 if needed.";
+
+      alert(msg);
+      cart = [0,0,0,0];
+      backToMenu();
+    }
+
+    function backToCart() {
+      document.getElementById("payment-screen").style.display = "none";
+      document.getElementById("cart-screen").style.display = "flex";
     }
 
     function backToMenu() {
       document.getElementById("cart-screen").style.display = "none";
+      document.getElementById("payment-screen").style.display = "none";
       document.getElementById("menu-screen").style.display = "block";
     }
 
-    function pay() {
-      alert("Order placed! Thank you!\nYour food is coming soon.\nCall/WhatsApp 059 430 2070");
-      cart = [0,0,0,0];
-      backToMenu();
+    function changeQty(index, delta) {
+      cart[index] = Math.max(0, cart[index] + delta);
+      showCart();
     }
   </script>
 
