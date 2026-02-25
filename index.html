@@ -24,6 +24,7 @@
       font-size: 1.6rem;
       font-weight: bold;
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      text-transform: uppercase;
     }
     .container {
       flex: 1;
@@ -78,6 +79,8 @@
       margin-bottom: 14px;
       cursor: pointer;
     }
+    .add-btn:hover { background: #e03e00; }
+
     .actions {
       display: flex;
       justify-content: center;
@@ -106,6 +109,7 @@
       height: 60px;
       margin-bottom: 4px;
     }
+
     #cart-screen, #payment-screen {
       display: none;
       flex-direction: column;
@@ -268,7 +272,7 @@
 </head>
 <body>
 
-  <header>Vic Mensa Food Store</header>
+  <header>VIC MENSA FOOD STORE</header>
 
   <div class="container">
 
@@ -279,7 +283,7 @@
           <img class="food" src="https://api.flavournetwork.ca/wp-content/uploads/2023/02/waakye-feat.jpg?w=3840&quality=75" alt="Waakye">
           <div class="name">Waakye + Sides</div>
           <div class="desc">Rice & beans • egg • spaghetti • gari • plantain</div>
-          <div class="price">₵69.99</div>
+          <div class="price">₵79.99</div>
           <button class="add-btn" onclick="add(0)">Add</button>
         </div>
 
@@ -287,7 +291,7 @@
           <img class="food" src="https://thumbs.dreamstime.com/b/jollof-rice-fried-plantain-chicken-traditional-west-african-dish-white-plate-delicious-plate-traditional-west-395870299.jpg" alt="Jollof">
           <div class="name">Jollof + Chicken</div>
           <div class="desc">Spicy rice with fried/grilled chicken legs</div>
-          <div class="price">₵49.99</div>
+          <div class="price">₵89.99</div>
           <button class="add-btn" onclick="add(1)">Add</button>
         </div>
 
@@ -317,7 +321,6 @@
       </div>
     </div>
 
-    <!-- Cart Screen -->
     <div id="cart-screen">
       <div id="cart-items"></div>
       <div class="total" id="total">₵0</div>
@@ -345,7 +348,6 @@
       </div>
     </div>
 
-    <!-- Payment Details Screen -->
     <div id="payment-screen">
       <h2 style="text-align:center; margin:16px 0; font-size:1.6rem;">Enter Payment Details</h2>
 
@@ -382,8 +384,8 @@
 
   <script>
     const foods = [
-      {name: "Waakye + Sides", price: 69.99, img: "https://api.flavournetwork.ca/wp-content/uploads/2023/02/waakye-feat.jpg?w=3840&quality=75"},
-      {name: "Jollof + Chicken", price: 49.99, img: "https://thumbs.dreamstime.com/b/jollof-rice-fried-plantain-chicken-traditional-west-african-dish-white-plate-delicious-plate-traditional-west-395870299.jpg"},
+      {name: "Waakye + Sides", price: 79.99, img: "https://api.flavournetwork.ca/wp-content/uploads/2023/02/waakye-feat.jpg?w=3840&quality=75"},
+      {name: "Jollof + Chicken", price: 89.99, img: "https://thumbs.dreamstime.com/b/jollof-rice-fried-plantain-chicken-traditional-west-african-dish-white-plate-delicious-plate-traditional-west-395870299.jpg"},
       {name: "Kelewele", price: 69.99, img: "https://i0.wp.com/thestoriedrecipe.com/wp-content/uploads/2023/07/Kelewele-1029.jpg?resize=720%2C480&ssl=1"},
       {name: "Fufu + Light Soup", price: 199.99, img: "https://eatwellabi.com/wp-content/uploads/2022/03/Ghana-light-soup-7.jpg"}
     ];
